@@ -14,7 +14,6 @@ class Signin extends StatefulWidget {
 class _SigninState extends State<Signin> {
   String email = '';
   String password = '';
-  bool _obscureText = true;
 
   Future signIn(String email, String password) async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -29,65 +28,73 @@ class _SigninState extends State<Signin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text('Login page'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(25),
         child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextField(
-            decoration: InputDecoration(
-              labelText: "Email"
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/logo.png',
+              height: 100,
             ),
-            onChanged: (input) {
-              email = input;
-            },
-          ),
-          TextField(
-            decoration: InputDecoration(
-                labelText: "Password",
-                suffixIcon: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _obscureText = !_obscureText;
-                    });
-                    child: Icon(
-                      _obscureText ? Icons.visibility_off : Icons.visibility,
-                    );
-                  }
-                )
+            TextField(
+              obscureText: false,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(), labelText: 'Email'),
+              onChanged: (String newEntry) {
+                print("Email is changed $newEntry");
+                email = newEntry;
+              },
             ),
-            obscureText: _obscureText,
-            onChanged: (input) {
-              password = input;
-            },
-          ),
-          ElevatedButton(
+            SizedBox(height: 20),
+            TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(), labelText: 'Password'),
+              onChanged: (String newEntry) {
+                print("Password is changed $newEntry");
+                password = newEntry;
+              },
+            ),
+            TextButton(
+              child: const Text("Forget password?"),
+              onPressed: () {},
+            ),
+            ElevatedButton(
               onPressed: () async {
-                final status = await signIn(email, password);
-                if (status){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => RoutePage()));
-                }else{
+                bool authenticated = await signIn(email, password);
+                if (authenticated != true) {
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text("Sorry. Something went wrong: " + status),
-                          actions: <Widget>[
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text("close")
-                            )
-                          ],
-                        );
-                      }
+                            title: Text("Your email or password is invalid!"),
+                            actions: <Widget>[
+                              TextButton(
+                                  child: Text("Close"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  }),
+                            ]);
+                      });
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RoutePage(),
+                    ),
                   );
-                }
+                };
               },
-              child: Text("Sign In"))
-        ],
-      )
-    )
+              child: const Text('Login'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

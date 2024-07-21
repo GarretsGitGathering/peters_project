@@ -29,10 +29,11 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
+        body: Padding(
+            padding: const EdgeInsets.all(25),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: <Widget>[
             TextField(
               decoration: InputDecoration(
                   labelText: "Email"
@@ -87,6 +88,7 @@ class _RegisterState extends State<Register> {
                 child: Text("Sign In"))
           ],
         )
-        ));
+        )
+    );
   }
 }
