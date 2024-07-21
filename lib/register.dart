@@ -29,66 +29,111 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Padding(
-            padding: const EdgeInsets.all(25),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Register page'),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(25),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          //mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
+            SizedBox(
+              height: 20,
+            ),
+            Image.asset(
+              'assets/logo.png',
+              height: 100,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+              height: 20,
+            ),
             TextField(
+              obscureText: false,
               decoration: InputDecoration(
-                  labelText: "Email"
-              ),
-              onChanged: (input) {
-                email = input;
+                  border: OutlineInputBorder(), labelText: 'Email'),
+              onChanged: (String newEntry) {
+                print("Email is changed $newEntry");
+                email = newEntry;
+              },
+            ),
+            SizedBox(height: 20),
+            TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(), labelText: 'Password'),
+              onChanged: (String newEntry) {
+                print("Password is changed $newEntry");
+                password = newEntry;
               },
             ),
             TextField(
+              obscureText: true,
               decoration: InputDecoration(
-                  labelText: "Password",
-                  suffixIcon: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _obscureText = !_obscureText;
-                        });
-                        child: Icon(
-                          _obscureText ? Icons.visibility_off : Icons.visibility,
-                        );
-                      }
-                  )
-              ),
-              obscureText: _obscureText,
-              onChanged: (input) {
-                password = input;
+                  border: OutlineInputBorder(), labelText: 'Re-input Password'),
+              onChanged: (String newEntry) {
+                print("Password2 is changed $newEntry");
+                password2 = newEntry;
+              },
+            ),
+            TextButton(
+              child: const Text("Already have an account?"),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LoginPage()));
               },
             ),
             ElevatedButton(
-                onPressed: () async {
-                  final status = await signUp(email, password);
-                  if (status){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => RoutePage()));
-                  }else{
+                onPressed: () {
+                  // if(password.length < 6 || password2.length < 6){
+                  //   showDialog(
+                  //       context: context,
+                  //       builder: (BuildContext context) {
+                  //         return AlertDialog(
+                  //             title: const Text("Password has to be more than 6 characters"),
+                  //             actions: <Widget>[
+                  //               TextButton(
+                  //                 child: const Text("Close"),
+                  //                 onPressed: () {
+                  //                   Navigator.of(context).pop();
+                  //                 },
+                  //               )
+                  //             ]);
+                  //       });
+                  // }
+                  if (password == password2) {
+                    signUp(email, password);
+                    /////////////////////////////////////////////hw
+                  } else {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Text("Sorry. Something went wrong: " + status),
-                            actions: <Widget>[
-                              TextButton(
+                              title: const Text("Your password don't match!"),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: const Text("Close"),
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
-                                  child: Text("close")
-                              )
-                            ],
-                          );
-                        }
-                    );
+                                )
+                              ]);
+                        });
                   }
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const routePage()));
                 },
-                child: Text("Sign In"))
+                //call the signIn function and pass the username and password, also redirect the user to the homescreen
+
+                child: const Text("Register")),
           ],
-        )
-        )
+        ),
+      ),
     );
   }
 }
